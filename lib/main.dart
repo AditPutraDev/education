@@ -1,3 +1,4 @@
+import 'package:education/home_try.dart';
 import 'package:education/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -14,7 +15,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.pink,
       ),
-      home: MainPage(),
+      home: Home(),
     );
   }
 }

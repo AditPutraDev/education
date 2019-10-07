@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+import 'main.dart';
+
 class RegisterPage extends StatefulWidget {
   @override
   _RegisterPageState createState() => _RegisterPageState();
@@ -22,11 +24,12 @@ class _RegisterPageState extends State<RegisterPage> {
 
   save() async {
     Map dataForm = {'email': email, 'username': username, 'password': password};
-    final response = await http.post("BASE_URL", body: dataForm);
+    final response = await http
+        .post("http://comic.id/api-ecourse/user/register.php", body: dataForm);
     final data = jsonDecode(response.body);
-    int value = data['value'];
+    int id = data['id'];
     String message = data['message'];
-    if (value == 1) {
+    if (id == 1) {
       setState(() {
         Navigator.pop(context);
       });
@@ -118,18 +121,41 @@ class _RegisterPageState extends State<RegisterPage> {
 
   Container buttonSection() {
     return Container(
-        width: MediaQuery.of(context).size.width,
-        height: 40,
-        padding: EdgeInsets.symmetric(horizontal: 15),
-        margin: EdgeInsets.only(top: 15),
-        child: RaisedButton(
-          onPressed: () {
-            check();
-          },
-          elevation: 0.0,
-          color: Colors.black26,
-          child: Text("Register", style: TextStyle(color: Colors.white70)),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-        ));
+        child: Column(
+      children: <Widget>[
+        Container(
+            width: MediaQuery.of(context).size.width,
+            height: 40,
+            padding: EdgeInsets.symmetric(horizontal: 15),
+            margin: EdgeInsets.only(top: 15),
+            child: RaisedButton(
+              onPressed: () {
+                check();
+              },
+              elevation: 0.0,
+              color: Colors.black26,
+              child: Text("Register", style: TextStyle(color: Colors.white70)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5)),
+            )),
+        Container(
+            width: MediaQuery.of(context).size.width,
+            height: 40,
+            padding: EdgeInsets.symmetric(horizontal: 15),
+            margin: EdgeInsets.only(top: 15),
+            child: RaisedButton(
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => MainPage()));
+              },
+              elevation: 0.0,
+              color: Colors.black26,
+              child: Text("Main Launcher",
+                  style: TextStyle(color: Colors.white70)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5)),
+            )),
+      ],
+    ));
   }
 }

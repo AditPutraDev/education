@@ -107,24 +107,7 @@ class _LoginPageState extends State<LoginPage> {
                     Text("Register", style: TextStyle(color: Colors.white70)),
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5)),
-              )),
-          Container(
-              width: MediaQuery.of(context).size.width,
-              height: 40,
-              padding: EdgeInsets.symmetric(horizontal: 15),
-              margin: EdgeInsets.only(top: 15),
-              child: RaisedButton(
-                onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => MainPage()));
-                },
-                elevation: 0.0,
-                color: Colors.black26,
-                child:
-                Text("Main Launcher", style: TextStyle(color: Colors.white70)),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5)),
-              )),
+              ))
         ],
       ),
     );
