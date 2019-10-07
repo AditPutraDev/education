@@ -40,10 +40,10 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  signIn(String email, pass) async {
+  signIn(String email, password) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    Map data = {'email': email, 'password': pass};
-    var jsonResponse = null;
+    Map data = {'email': email, 'password': password};
+    var jsonResponse;
     var response = await http.post("http://comic.id/api-ecourse/user/login.php",
         body: data);
     if (response.statusCode == 200) {
@@ -102,9 +102,26 @@ class _LoginPageState extends State<LoginPage> {
                       MaterialPageRoute(builder: (context) => RegisterPage()));
                 },
                 elevation: 0.0,
-                color: Colors.blue,
+                color: Colors.transparent,
                 child:
                     Text("Register", style: TextStyle(color: Colors.white70)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5)),
+              )),
+          Container(
+              width: MediaQuery.of(context).size.width,
+              height: 40,
+              padding: EdgeInsets.symmetric(horizontal: 15),
+              margin: EdgeInsets.only(top: 15),
+              child: RaisedButton(
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => MainPage()));
+                },
+                elevation: 0.0,
+                color: Colors.black26,
+                child:
+                Text("Main Launcher", style: TextStyle(color: Colors.white70)),
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5)),
               )),
@@ -133,7 +150,7 @@ class _LoginPageState extends State<LoginPage> {
               hintStyle: TextStyle(color: Colors.white70),
             ),
           ),
-          SizedBox(height: 30.0),
+          SizedBox(height: 30),
           TextFormField(
             controller: passwordController,
             cursorColor: Colors.white,
@@ -159,7 +176,7 @@ class _LoginPageState extends State<LoginPage> {
       child: Text("Education",
           style: TextStyle(
               color: Colors.white70,
-              fontSize: 40.0,
+              fontSize: 40,
               fontWeight: FontWeight.bold)),
     );
   }
