@@ -1,4 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'main.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -10,15 +17,25 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-            colors: [Colors.blue, Colors.teal],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter),
-      ),
-      child: ListView(
-        children: <Widget>[headerSection(), textSection(), bottomSection()],
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light
+        .copyWith(statusBarColor: Colors.transparent));
+    return Scaffold(
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+              colors: [Colors.blue, Colors.teal],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter),
+        ),
+        child: _isLoading
+            ? Center(child: CircularProgressIndicator())
+            : ListView(
+                children: <Widget>[
+                  headerSection(),
+                  textSection(),
+                  bottonSection()
+                ],
+              ),
       ),
     );
   }
@@ -45,36 +62,52 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   signIn(String email, password) async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     Map data = {'email': email, 'password': password};
-    var jsonData = null;
-    var response = await http.post("", body: data);
+    var jsonResponse = null;
+    var response = await http.post("BASE_URL", body: data);
+    if (response.statusCode == 200) {
+      jsonResponse = json.decode(response.body);
+      if (jsonResponse != null) {
+        setState(() {
+          _isLoading = false;
+        });
+        sharedPreferences.setString("token", jsonResponse['token']);
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (BuildContext context) => MainPage()),
+            (Route<dynamic> route) => false);
+      }
+    } else {
+      setState(() {
+        _isLoading = false;
+      });
+      print(response.body)
+    }
   }
 
-  Container bottomSection() {
+  Container bottonSection() {
     return Container(
       width: MediaQuery.of(context).size.width,
       height: 40,
-      margin: EdgeInsets.only(top: 30),
-      padding: EdgeInsets.symmetric(horizontal: 20),
+      margin: EdgeInsets.only(top: 15),
+      padding: EdgeInsets.symmetric(horizontal: 15),
       child: RaisedButton(
-        onPressed: () {
+        onPressed: emailController.text == "" || passwordController.text == "" ? null : () {
           setState(() {
             _isLoading = true;
           });
           signIn(emailController.text, passwordController.text);
         },
+        elevation: 0,
         color: Colors.purple,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-        child: Text(
-          "Sign In",
-          style: TextStyle(color: Colors.white70),
-        ),
+        child: Text("Sign In", style: TextStyle(color: Colors.white70)),
       ),
     );
   }
 
-  TextEditingController emailController,
-      passwordController = new TextEditingController();
+  final TextEditingController emailController = new TextEditingController();
+  final TextEditingController passwordController = new TextEditingController();
 
   TextFormField tvEmail(String title, iconData, icon) {
     return TextFormField(
